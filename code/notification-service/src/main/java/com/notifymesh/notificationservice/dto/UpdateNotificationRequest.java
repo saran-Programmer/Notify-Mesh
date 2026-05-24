@@ -1,6 +1,5 @@
 package com.notifymesh.notificationservice.dto;
 
-import com.notifymesh.notificationservice.domain.valueobject.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,15 +11,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NotificationResponse {
+public class UpdateNotificationRequest {
 
-    private Long id;
+    private String recipient;
 
-    private String externalId;
+    private String subject;
 
-    private NotificationStatus status;
-
-    private LocalDateTime sentAt;
+    private String content;
 
     private LocalDateTime scheduledAt;
+
+    private String externalId;
 }

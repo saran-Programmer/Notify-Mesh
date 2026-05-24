@@ -3,7 +3,9 @@ package com.notifymesh.notificationservice.controller;
 import com.notifymesh.notificationservice.domain.service.NotificationService;
 import com.notifymesh.notificationservice.dto.NotificationRequest;
 import com.notifymesh.notificationservice.dto.NotificationResponse;
+import com.notifymesh.notificationservice.dto.UpdateNotificationRequest;
 import com.notifymesh.notificationservice.validator.NotificationRequestValidator;
+import com.notifymesh.notificationservice.validator.UpdateNotificationRequestValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationController {
 
     private final NotificationRequestValidator notificationRequestValidator;
+    private final UpdateNotificationRequestValidator updateNotificationRequestValidator;
     private final NotificationService notificationService;
 
     @PostMapping
@@ -33,22 +36,24 @@ public class NotificationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getNotificationById(@PathVariable Long id) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<NotificationResponse> getNotificationById(@PathVariable Long id) {
+        return ResponseEntity.ok(notificationService.getNotificationById(id));
     }
 
     @GetMapping("/external/{externalId}")
-    public ResponseEntity<Object> getNotificationByExternalId(@PathVariable String externalId) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<NotificationResponse> getNotificationByExternalId(@PathVariable String externalId) {
+        return ResponseEntity.ok(notificationService.getNotificationByExternalId(externalId));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateNotification(@PathVariable Long id, @RequestBody Object request) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable Long id, @Valid @RequestBody UpdateNotificationRequest request) {
+        updateNotificationRequestValidator.validate(request);
+        return ResponseEntity.ok(notificationService.updateNotification(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNotification(@PathVariable Long id) {
+        notificationService.deleteNotification(id);
         return ResponseEntity.noContent().build();
     }
 }

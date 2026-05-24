@@ -4,11 +4,13 @@ import com.notifymesh.notificationservice.domain.valueobject.AuditStatus;
 import com.notifymesh.notificationservice.domain.valueobject.NotificationStatus;
 import com.notifymesh.notificationservice.dto.AttachmentRequest;
 import com.notifymesh.notificationservice.dto.NotificationRequest;
+import com.notifymesh.notificationservice.dto.NotificationResponse;
 import com.notifymesh.notificationservice.infrastructure.entity.AuditLog;
 import com.notifymesh.notificationservice.infrastructure.entity.Attachment;
 import com.notifymesh.notificationservice.infrastructure.entity.ChannelType;
 import com.notifymesh.notificationservice.infrastructure.entity.Notification;
 import com.notifymesh.notificationservice.infrastructure.entity.PriorityTable;
+import com.notifymesh.notificationservice.infrastructure.repository.NotificationSummary;
 
 import java.time.LocalDateTime;
 
@@ -50,6 +52,26 @@ public class NotificationMapper {
                 .size(request.getSize())
                 .createdAt(now)
                 .lastModifiedAt(now)
+                .build();
+    }
+
+    public static NotificationResponse toNotificationResponse(Notification notification) {
+        return NotificationResponse.builder()
+                .id(notification.getId())
+                .externalId(notification.getExternalId())
+                .status(notification.getStatus())
+                .sentAt(notification.getSentAt())
+                .scheduledAt(notification.getScheduledAt())
+                .build();
+    }
+
+    public static NotificationResponse toNotificationResponse(NotificationSummary summary) {
+        return NotificationResponse.builder()
+                .id(summary.getId())
+                .externalId(summary.getExternalId())
+                .status(summary.getStatus())
+                .sentAt(summary.getSentAt())
+                .scheduledAt(summary.getScheduledAt())
                 .build();
     }
 

@@ -77,7 +77,7 @@ public class Notification {
 
     private LocalDateTime processingStartedAt;
 
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true)
     private String externalId;
 
     @Column(nullable = false, updatable = false)

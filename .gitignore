@@ -46,3 +46,4 @@ maven-wrapper.properties
 *.json
 
 graphify-out/.graphify_root
+aws cred/notifymesh-dev_accessKeys.csv
