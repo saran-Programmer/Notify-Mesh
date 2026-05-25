@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.notifymesh.notificationservice.domain.valueobject.DeliveryType;
 import com.notifymesh.notificationservice.domain.valueobject.Mode;
 import com.notifymesh.notificationservice.domain.valueobject.NotificationStatus;
+import com.notifymesh.notificationservice.dto.AttachmentRequest;
 import com.notifymesh.notificationservice.dto.NotificationRequest;
 import com.notifymesh.notificationservice.dto.NotificationResponse;
 import com.notifymesh.notificationservice.dto.UpdateNotificationRequest;
@@ -19,9 +20,7 @@ import com.notifymesh.notificationservice.infrastructure.entity.Attachment;
 import com.notifymesh.notificationservice.infrastructure.entity.ChannelType;
 import com.notifymesh.notificationservice.infrastructure.entity.Notification;
 import com.notifymesh.notificationservice.infrastructure.entity.PriorityTable;
-import com.notifymesh.notificationservice.infrastructure.repository.ChannelTypeRepository;
 import com.notifymesh.notificationservice.infrastructure.repository.NotificationRepository;
-import com.notifymesh.notificationservice.infrastructure.repository.PriorityRepository;
 import com.notifymesh.notificationservice.mapper.NotificationMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final ChannelTypeRepository channelTypeRepository;
-    private final PriorityRepository priorityRepository;
+    private final ReferenceDataService referenceDataService;
+    private final AttachmentService attachmentService;
 
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
@@ -42,17 +41,17 @@ public class NotificationService {
                     "notification with externalId '" + request.getExternalId() + "' already exists");
         }
 
-        ChannelType channelType = channelTypeRepository.findByName(request.getChannel().name())
-                .orElseThrow(() -> new NotFoundException(
-                        "channel type '" + request.getChannel().name() + "' not configured"));
+        ChannelType channelType = referenceDataService.getChannelByName(request.getChannel().name());
 
-        PriorityTable priority = priorityRepository.findByName(request.getPriority().name())
-                .orElseThrow(() -> new NotFoundException(
-                        "priority '" + request.getPriority().name() + "' not configured"));
+        PriorityTable priority = referenceDataService.getPriorityByName(request.getPriority().name());
 
         Notification notification = NotificationMapper.toNotification(request, channelType, priority);
 
         if (request.getAttachmentIds() != null && !request.getAttachmentIds().isEmpty()) {
+            List<String> s3Keys = request.getAttachmentIds().stream()
+                    .map(AttachmentRequest::getS3Key)
+                    .toList();
+            attachmentService.validateAndEvictAttachments(s3Keys);
             List<Attachment> attachments = request.getAttachmentIds().stream()
                     .map(a -> NotificationMapper.toAttachment(a, notification))
                     .toList();

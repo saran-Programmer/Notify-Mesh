@@ -2,6 +2,11 @@ spring:
   application:
     name: notification-service
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   datasource:
     url: jdbc:postgresql://localhost:5432/notifymesh_db
     username: postgres
@@ -31,3 +36,10 @@ aws:
   region: ap-south-1
   s3:
     bucket-name: notify-mesh-dynamic-attachments-dev
+
+redis:
+  cache:
+    ttl:
+      priority: 86400
+      channel: 86400
+      attachment-url: 900
