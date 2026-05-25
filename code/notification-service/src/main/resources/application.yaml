@@ -22,7 +22,7 @@ spring:
   sql:
     init:
       mode: always
-
+      
 server:
   port: 9090
 
@@ -43,3 +43,10 @@ redis:
       priority: 86400
       channel: 86400
       attachment-url: 900
+
+kafka:
+  bootstrap-servers: localhost:9092
+  topics:
+    high: notification.priority.high
+    medium: notification.priority.medium
+    low: notification.priority.low

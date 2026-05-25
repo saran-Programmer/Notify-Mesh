@@ -21,6 +21,7 @@ import com.notifymesh.notificationservice.infrastructure.entity.ChannelType;
 import com.notifymesh.notificationservice.infrastructure.entity.Notification;
 import com.notifymesh.notificationservice.infrastructure.entity.PriorityTable;
 import com.notifymesh.notificationservice.infrastructure.repository.NotificationRepository;
+import com.notifymesh.notificationservice.infrastructure.messaging.kafka.NotificationKafkaProducer;
 import com.notifymesh.notificationservice.mapper.NotificationMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final ReferenceDataService referenceDataService;
     private final AttachmentService attachmentService;
+    private final NotificationKafkaProducer notificationKafkaProducer;
 
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
@@ -59,6 +61,8 @@ public class NotificationService {
         }
 
         Notification saved = notificationRepository.save(notification);
+
+        notificationKafkaProducer.publish(NotificationMapper.toNotificationEvent(saved));
 
         return NotificationMapper.toNotificationResponse(saved);
     }
