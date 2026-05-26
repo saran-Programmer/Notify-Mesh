@@ -50,7 +50,6 @@ public class NotificationRequest {
     private Priority priority;
 
     @NotNull
-    @Min(0)
     private Integer maxRetries;
 
     private String content;

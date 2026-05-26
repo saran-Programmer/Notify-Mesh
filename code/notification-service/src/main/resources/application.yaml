@@ -33,7 +33,7 @@ springdoc:
     path: /swagger-ui
 
 aws:
-  region: ap-south-1
+  region: eu-north-1
   s3:
     bucket-name: notify-mesh-dynamic-attachments-dev
 

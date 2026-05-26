@@ -47,6 +47,11 @@ public class NotificationService {
 
         PriorityTable priority = referenceDataService.getPriorityByName(request.getPriority().name());
 
+        if(request.getMaxRetries() == null) {
+            
+            request.setMaxRetries(channelType.getDefaultRetryCount());
+        }
+
         Notification notification = NotificationMapper.toNotification(request, channelType, priority);
 
         if (request.getAttachmentIds() != null && !request.getAttachmentIds().isEmpty()) {
