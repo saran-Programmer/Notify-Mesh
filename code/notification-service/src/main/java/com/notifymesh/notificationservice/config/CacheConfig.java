@@ -25,10 +25,11 @@ import java.util.Map;
 public class CacheConfig {
 
     private final CacheProperties cacheProperties;
+    private final ObjectMapper objectMapper;
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory factory, ObjectMapper springObjectMapper) {
-        ObjectMapper cacheMapper = springObjectMapper.copy()
+    public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
+        ObjectMapper cacheMapper = objectMapper.copy()
                 .activateDefaultTyping(
                         BasicPolymorphicTypeValidator.builder()
                                 .allowIfSubType("com.notifymesh")
@@ -40,6 +41,7 @@ public class CacheConfig {
         GenericJackson2JsonRedisSerializer valueSerializer = new GenericJackson2JsonRedisSerializer(cacheMapper);
 
         RedisCacheConfiguration base = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofHours(1))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair
@@ -47,12 +49,17 @@ public class CacheConfig {
                 .disableCachingNullValues();
 
         Map<String, RedisCacheConfiguration> configs = new HashMap<>();
-        configs.put(CacheNames.PRIORITY, base.entryTtl(Duration.ofSeconds(cacheProperties.getPriority())));
-        configs.put(CacheNames.CHANNEL, base.entryTtl(Duration.ofSeconds(cacheProperties.getChannel())));
-        configs.put(CacheNames.ATTACHMENT_URL, base.entryTtl(Duration.ofSeconds(cacheProperties.getAttachmentUrl())));
+        configs.put(CacheNames.PRIORITY, base.entryTtl(resolveTtl(cacheProperties.getPriority())));
+        configs.put(CacheNames.CHANNEL, base.entryTtl(resolveTtl(cacheProperties.getChannel())));
+        configs.put(CacheNames.ATTACHMENT_URL, base.entryTtl(resolveTtl(cacheProperties.getAttachmentUrl())));
 
         return RedisCacheManager.builder(factory)
                 .withInitialCacheConfigurations(configs)
                 .build();
+    }
+
+    private Duration resolveTtl(long seconds) {
+
+        return seconds == 0 ? Duration.ZERO : Duration.ofSeconds(seconds);
     }
 }
