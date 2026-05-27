@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: worker-service
+
+server:
+  port: 9091
+
+kafka:
+  bootstrap-servers: localhost:9092
+  consumer-group-id: worker-service
+  topics:
+    high: notification.priority.high
+    medium: notification.priority.medium
+    low: notification.priority.low
