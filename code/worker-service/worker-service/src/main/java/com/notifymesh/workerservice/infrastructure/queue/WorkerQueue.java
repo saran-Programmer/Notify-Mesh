@@ -14,6 +14,23 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class WorkerQueue {
 
+    // ------------------------------------------------------------------ singleton
+
+    private static volatile WorkerQueue instance;
+
+    /** Private constructor — prevents direct instantiation outside this class.
+     *  Spring creates the one managed instance via reflection. */
+    private WorkerQueue() {
+    }
+
+    /** Returns the single application-wide instance.
+     *  Available after the Spring context has started. */
+    public static WorkerQueue getInstance() {
+        return instance;
+    }
+
+    // ------------------------------------------------------------------ state
+
     private final BlockingQueue<NotificationEvent> highQueue   = new LinkedBlockingQueue<>();
     private final BlockingQueue<NotificationEvent> mediumQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<NotificationEvent> lowQueue    = new LinkedBlockingQueue<>();
@@ -26,6 +43,7 @@ public class WorkerQueue {
 
     @PostConstruct
     public void startWorkerThread() {
+        instance = this;        // anchor the static reference to the Spring-managed bean
         running = true;
         Thread worker = new Thread(this::pollAndProcess, "worker-queue-thread");
         worker.setDaemon(true);

@@ -12,3 +12,8 @@ kafka:
     high: notification.priority.high
     medium: notification.priority.medium
     low: notification.priority.low
+
+aws:
+  region: ap-south-1
+  s3:
+    bucket-name: notifymesh-attachments
