@@ -8,14 +8,6 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
-/**
- * Provides a singleton {@link S3Client} bean wired from {@link AwsProperties}.
- * Credentials are resolved via the AWS default-credentials chain
- * (env vars → ~/.aws/credentials → IAM role).
- *
- * <p>{@code @EnableRetry} is declared here so retry support is scoped to the
- * S3 / attachment infrastructure rather than being spread to unrelated beans.
- */
 @EnableRetry
 @Configuration
 @RequiredArgsConstructor
