@@ -26,10 +26,18 @@ public class AttachmentService {
         for (MultipartFile file : files) {
             try {
                 String s3Key = s3Service.upload(file);
+                String url = s3Service.getObjectUrl(s3Key);
                 if (attachmentCache != null) {
                     attachmentCache.put(s3Key, s3Key);
                 }
-                responses.add(AttachmentResponse.builder().s3Key(s3Key).success(true).build());
+                responses.add(AttachmentResponse.builder()
+                        .s3Key(s3Key)
+                        .url(url)
+                        .name(file.getOriginalFilename())
+                        .type(file.getContentType())
+                        .size((int) file.getSize())
+                        .success(true)
+                        .build());
             } catch (Exception e) {
                 responses.add(AttachmentResponse.builder().success(false)
                         .errorMessage(e.getMessage()).build());

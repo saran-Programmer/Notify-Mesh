@@ -3,7 +3,6 @@ package com.notifymesh.workerservice.domain.service;
 import com.notifymesh.workerservice.domain.model.FileAttachment;
 import com.notifymesh.workerservice.domain.service.delivery.DeliveryStrategyResolver;
 import com.notifymesh.workerservice.dto.NotificationEvent;
-import com.notifymesh.workerservice.exception.AttachmentDownloadException;
 import com.notifymesh.workerservice.mapper.WorkerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

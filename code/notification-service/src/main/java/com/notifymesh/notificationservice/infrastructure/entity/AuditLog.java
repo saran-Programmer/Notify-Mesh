@@ -31,9 +31,7 @@ public class AuditLog {
     @Column(nullable = false)
     private AuditStatus status;
 
-    private String errorCode;
-
-    @Column(columnDefinition = "jsonb")
+    @Column
     private String clientErrorMessage;
 
     private String workerId;

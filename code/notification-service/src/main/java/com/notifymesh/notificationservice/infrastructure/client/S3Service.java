@@ -69,6 +69,12 @@ public class S3Service {
         return s3Key;
     }
 
+    public String getObjectUrl(String s3Key) {
+        return "https://" + awsProperties.getS3().getBucketName()
+                + ".s3." + awsProperties.getRegion()
+                + ".amazonaws.com/" + s3Key;
+    }
+
     @Recover
     public String recoverUpload(SdkException e, MultipartFile file) {
         throw new S3UploadRetryExhaustedException(

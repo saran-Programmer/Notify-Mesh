@@ -4,6 +4,8 @@ import com.notifymesh.workerservice.domain.service.WorkerService;
 import com.notifymesh.workerservice.dto.NotificationEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class WorkerQueue {
 
     private static volatile WorkerQueue instance;
@@ -65,8 +68,8 @@ public class WorkerQueue {
                     workerService.handleNotification(event);
                 }
 
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                log.error("Unexpected error in worker queue thread - continuing", e);
             }
         }
     }

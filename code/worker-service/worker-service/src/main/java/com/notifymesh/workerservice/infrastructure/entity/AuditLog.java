@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,7 +37,7 @@ public class AuditLog {
     @Column(nullable = false)
     private LogStatus status;
 
-    @Column(columnDefinition = "jsonb")
+    @Column
     private String clientErrorMessage;
 
     @Column(nullable = false, updatable = false)
