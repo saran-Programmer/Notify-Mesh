@@ -104,6 +104,7 @@ public class NotificationMapper {
                 .templateName(notification.getTemplateName())
                 .parameters(stringParams)
                 .retryCount(notification.getRetryCount())
+                .maxRetries(notification.getMaxRetries())
                 .attachments(attachmentKeys)
                 .mode(notification.getMode())
                 .baseDelaySeconds(notification.getPriority().getBaseDelaySeconds())

@@ -2,6 +2,9 @@ spring:
   application:
     name: worker-service
 
+  config:
+    import: "optional:file:.env[.properties]"
+
   data:
     redis:
       host: localhost
@@ -22,6 +25,18 @@ spring:
   sql:
     init:
       mode: always
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
   port: 9091

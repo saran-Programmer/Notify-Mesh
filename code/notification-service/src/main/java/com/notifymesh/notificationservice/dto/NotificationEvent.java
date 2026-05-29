@@ -26,6 +26,7 @@ public class NotificationEvent {
     private String templateName;
     private Map<String, String> parameters;
     private Integer retryCount;
+    private Integer maxRetries;
     private List<String> attachments;
     private Mode mode;
     private Integer baseDelaySeconds;
