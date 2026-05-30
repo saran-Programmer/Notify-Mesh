@@ -10,12 +10,14 @@ import com.notifymesh.notificationservice.domain.valueobject.DeliveryType;
 import com.notifymesh.notificationservice.domain.valueobject.Mode;
 import com.notifymesh.notificationservice.domain.valueobject.NotificationStatus;
 import com.notifymesh.notificationservice.dto.AttachmentRequest;
+import com.notifymesh.notificationservice.dto.NotificationEvent;
 import com.notifymesh.notificationservice.dto.NotificationRequest;
 import com.notifymesh.notificationservice.dto.NotificationResponse;
 import com.notifymesh.notificationservice.dto.UpdateNotificationRequest;
 import com.notifymesh.notificationservice.exception.ValidationException;
 import com.notifymesh.notificationservice.exception.DuplicateExternalIdException;
 import com.notifymesh.notificationservice.exception.NotFoundException;
+import com.notifymesh.notificationservice.infrastructure.client.EventBridgeSchedulerService;
 import com.notifymesh.notificationservice.infrastructure.entity.Attachment;
 import com.notifymesh.notificationservice.infrastructure.entity.ChannelType;
 import com.notifymesh.notificationservice.infrastructure.entity.Notification;
@@ -34,6 +36,7 @@ public class NotificationService {
     private final ReferenceDataService referenceDataService;
     private final AttachmentService attachmentService;
     private final NotificationKafkaProducer notificationKafkaProducer;
+    private final EventBridgeSchedulerService eventBridgeSchedulerService;
 
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
@@ -48,7 +51,7 @@ public class NotificationService {
         PriorityTable priority = referenceDataService.getPriorityByName(request.getPriority().name());
 
         if(request.getMaxRetries() == null) {
-            
+
             request.setMaxRetries(channelType.getDefaultRetryCount());
         }
 
@@ -67,7 +70,13 @@ public class NotificationService {
 
         Notification saved = notificationRepository.save(notification);
 
-        notificationKafkaProducer.publish(NotificationMapper.toNotificationEvent(saved));
+        NotificationEvent event = NotificationMapper.toNotificationEvent(saved);
+
+        if (saved.getDeliveryType() == DeliveryType.DIRECT) {
+            notificationKafkaProducer.publish(event);
+        } else {
+            eventBridgeSchedulerService.schedule(saved.getId(), saved.getScheduledAt(), event);
+        }
 
         return NotificationMapper.toNotificationResponse(saved);
     }

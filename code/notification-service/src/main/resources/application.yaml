@@ -36,6 +36,10 @@ aws:
   region: eu-north-1
   s3:
     bucket-name: notify-mesh-dynamic-attachments-dev
+  lambda:
+    scheduler-arn: ${LAMBDA_SCHEDULER_ARN}
+  eventbridge:
+    role-arn: ${EVENTBRIDGE_ROLE_ARN}
 
 redis:
   cache:

@@ -1,5 +1,4 @@
-*.md
-*.html
+HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -32,19 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Images ###
-*.png
-*.jpg
-*.jpeg
-*.gif
-
-### maven wrapper ###
-maven-wrapper.properties
-
-### json files ###
-*.json
-
-graphify-out/.graphify_root
-aws cred/notifymesh-dev_accessKeys.csv
-.env
