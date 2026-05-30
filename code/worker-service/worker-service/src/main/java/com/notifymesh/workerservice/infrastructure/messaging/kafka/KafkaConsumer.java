@@ -1,6 +1,6 @@
 package com.notifymesh.workerservice.infrastructure.messaging.kafka;
 
-import com.notifymesh.workerservice.config.KafkaConstants;
+import com.notifymesh.workerservice.constants.KafkaConstants;
 import com.notifymesh.workerservice.dto.NotificationEvent;
 import com.notifymesh.workerservice.infrastructure.queue.WorkerQueue;
 

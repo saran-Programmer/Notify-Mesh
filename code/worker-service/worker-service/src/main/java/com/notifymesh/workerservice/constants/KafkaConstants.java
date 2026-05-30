@@ -1,4 +1,4 @@
-package com.notifymesh.workerservice.config;
+package com.notifymesh.workerservice.constants;
 
 public final class KafkaConstants {
 

@@ -18,10 +18,10 @@ import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
 import software.amazon.awssdk.services.dynamodb.waiters.DynamoDbWaiter;
 
-import static com.notifymesh.templateservice.constant.TemplateFields.CHANNEL_TYPE;
-import static com.notifymesh.templateservice.constant.TemplateFields.CREATED_DATE;
-import static com.notifymesh.templateservice.constant.TemplateFields.TEMPLATE_NAME;
-import static com.notifymesh.templateservice.constant.TemplateFields.VERSION;
+import static com.notifymesh.templateservice.constants.TemplateFields.CHANNEL_TYPE;
+import static com.notifymesh.templateservice.constants.TemplateFields.CREATED_DATE;
+import static com.notifymesh.templateservice.constants.TemplateFields.TEMPLATE_NAME;
+import static com.notifymesh.templateservice.constants.TemplateFields.VERSION;
 
 @Component
 @RequiredArgsConstructor

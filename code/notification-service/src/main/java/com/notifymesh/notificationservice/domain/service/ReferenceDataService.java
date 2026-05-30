@@ -1,6 +1,6 @@
 package com.notifymesh.notificationservice.domain.service;
 
-import com.notifymesh.notificationservice.constant.CacheNames;
+import com.notifymesh.notificationservice.constants.CacheNames;
 import com.notifymesh.notificationservice.exception.NotFoundException;
 import com.notifymesh.notificationservice.infrastructure.entity.ChannelType;
 import com.notifymesh.notificationservice.infrastructure.entity.PriorityTable;

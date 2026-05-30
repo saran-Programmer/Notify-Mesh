@@ -1,6 +1,6 @@
 package com.notifymesh.notificationservice.domain.service;
 
-import com.notifymesh.notificationservice.constant.CacheNames;
+import com.notifymesh.notificationservice.constants.CacheNames;
 import com.notifymesh.notificationservice.dto.AttachmentResponse;
 import com.notifymesh.notificationservice.exception.AttachmentNotAccessibleException;
 import com.notifymesh.notificationservice.infrastructure.client.S3Service;

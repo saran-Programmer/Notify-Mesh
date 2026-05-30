@@ -1,5 +1,6 @@
 package com.notifymesh.workerservice.config;
 
+import com.notifymesh.workerservice.constants.KafkaConstants;
 import com.notifymesh.workerservice.dto.NotificationEvent;
 import com.notifymesh.workerservice.infrastructure.messaging.kafka.NotificationEventDeserializer;
 import lombok.RequiredArgsConstructor;

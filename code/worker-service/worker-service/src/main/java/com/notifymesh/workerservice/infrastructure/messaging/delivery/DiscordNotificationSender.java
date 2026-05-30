@@ -26,6 +26,8 @@ public class DiscordNotificationSender implements NotificationSender {
 
     private static final String DISCORD_API_BASE = "https://discord.com/api/v10";
 
+    private static final String CONTENT_KEY = "content";
+
     private final WebClient webClient;
     private final DiscordProperties discordProperties;
 
@@ -37,8 +39,11 @@ public class DiscordNotificationSender implements NotificationSender {
     @Override
     public void send(NotificationEvent event, List<FileAttachment> attachments) {
         String channelId = event.getRecipient();
-        String url = DISCORD_API_BASE + "/channels/" + channelId + "/messages";
-        String authHeader = "Bot " + discordProperties.getBotToken();
+        String channelsPath = "/channels/";
+        String messagesPath = "/messages";
+        String botAuthPrefix = "Bot ";
+        String url = DISCORD_API_BASE + channelsPath + channelId + messagesPath;
+        String authHeader = botAuthPrefix + discordProperties.getBotToken();
 
         if (attachments.isEmpty()) {
             sendTextMessage(url, authHeader, event.getContent());
@@ -52,7 +57,7 @@ public class DiscordNotificationSender implements NotificationSender {
                 .uri(url)
                 .header(HttpHeaders.AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(Map.of("content", content))
+                .bodyValue(Map.of(CONTENT_KEY, content))
                 .retrieve()
                 .onStatus(status -> !status.is2xxSuccessful(), response ->
                         response.bodyToMono(String.class).map(errorBody ->
@@ -62,12 +67,16 @@ public class DiscordNotificationSender implements NotificationSender {
     }
 
     private void sendMultipartMessage(String url, String authHeader, String content, List<FileAttachment> attachments) {
+        String payloadPartName = "payload_json";
+        String filesPartPrefix = "files[";
+        String filesPartSuffix = "]";
+
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("payload_json", Map.of("content", content)).contentType(MediaType.APPLICATION_JSON);
+        builder.part(payloadPartName, Map.of(CONTENT_KEY, content)).contentType(MediaType.APPLICATION_JSON);
 
         for (int i = 0; i < attachments.size(); i++) {
             FileAttachment attachment = attachments.get(i);
-            builder.part("files[" + i + "]", new ByteArrayResource(attachment.getFileBytes()))
+            builder.part(filesPartPrefix + i + filesPartSuffix, new ByteArrayResource(attachment.getFileBytes()))
                     .filename(attachment.getFileName());
         }
 

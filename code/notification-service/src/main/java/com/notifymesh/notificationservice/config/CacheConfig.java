@@ -3,7 +3,7 @@ package com.notifymesh.notificationservice.config;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.notifymesh.notificationservice.constant.CacheNames;
+import com.notifymesh.notificationservice.constants.CacheNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -29,11 +29,14 @@ public class CacheConfig {
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
+        String notifymeshBasePackage = "com.notifymesh";
+        String javaTimePackage = "java.time";
+
         ObjectMapper cacheMapper = objectMapper.copy()
                 .activateDefaultTyping(
                         BasicPolymorphicTypeValidator.builder()
-                                .allowIfSubType("com.notifymesh")
-                                .allowIfSubType("java.time")
+                                .allowIfSubType(notifymeshBasePackage)
+                                .allowIfSubType(javaTimePackage)
                                 .build(),
                         ObjectMapper.DefaultTyping.NON_FINAL,
                         JsonTypeInfo.As.PROPERTY);

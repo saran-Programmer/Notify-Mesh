@@ -21,8 +21,6 @@ public class EmailNotificationSender implements NotificationSender {
 
     private final JavaMailSender mailSender;
 
-    private final String UTF8 = "UTF-8";
-
     @Override
     public Channel channel() {
         return Channel.EMAIL;
@@ -30,12 +28,13 @@ public class EmailNotificationSender implements NotificationSender {
 
     @Override
     public void send(NotificationEvent event, List<FileAttachment> attachments) throws MessagingException {
+        String encoding = "UTF-8";
 
         MimeMessage message = mailSender.createMimeMessage();
 
         boolean multipart = !attachments.isEmpty();
-        
-        MimeMessageHelper helper = new MimeMessageHelper(message, multipart, UTF8);
+
+        MimeMessageHelper helper = new MimeMessageHelper(message, multipart, encoding);
 
         helper.setTo(event.getRecipient());
         helper.setSubject(event.getSubject());

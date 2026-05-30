@@ -8,7 +8,7 @@ import com.notifymesh.templateservice.infrastructure.entity.Template;
 import com.notifymesh.templateservice.infrastructure.entity.TemplateAttachment;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-import static com.notifymesh.templateservice.constant.TemplateFields.*;
+import static com.notifymesh.templateservice.constants.TemplateFields.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

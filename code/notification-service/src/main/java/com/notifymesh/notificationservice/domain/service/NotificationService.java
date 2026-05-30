@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.notifymesh.notificationservice.domain.valueobject.DeliveryType;
 import com.notifymesh.notificationservice.domain.valueobject.Mode;
 import com.notifymesh.notificationservice.domain.valueobject.NotificationStatus;
+import com.notifymesh.notificationservice.domain.valueobject.Channel;
 import com.notifymesh.notificationservice.dto.AttachmentRequest;
 import com.notifymesh.notificationservice.dto.NotificationEvent;
 import com.notifymesh.notificationservice.dto.NotificationRequest;
@@ -104,12 +105,12 @@ public class NotificationService {
                     "notification with externalId '" + request.getExternalId() + "' already exists");
         }
 
-        if (request.getSubject() != null && !"EMAIL".equals(notification.getChannelType().getName())) {
+        if (request.getSubject() != null && !Channel.EMAIL.name().equals(notification.getChannelType().getName())) {
             throw new ValidationException("subject can only be updated for EMAIL channel");
         }
 
         if (request.getSubject() != null && request.getSubject().isBlank()
-                && "EMAIL".equals(notification.getChannelType().getName())) {
+                && Channel.EMAIL.name().equals(notification.getChannelType().getName())) {
             throw new ValidationException("subject must not be blank for EMAIL channel");
         }
 

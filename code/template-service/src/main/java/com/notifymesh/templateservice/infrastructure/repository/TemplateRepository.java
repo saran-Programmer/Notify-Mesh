@@ -22,14 +22,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.notifymesh.templateservice.constant.TemplateFields.CHANNEL_TYPE;
-import static com.notifymesh.templateservice.constant.TemplateFields.IS_ACTIVE;
-import static com.notifymesh.templateservice.constant.TemplateFields.TEMPLATE_NAME;
-import static com.notifymesh.templateservice.constant.TemplateFields.VERSION;
+import static com.notifymesh.templateservice.constants.TemplateFields.CHANNEL_TYPE;
+import static com.notifymesh.templateservice.constants.TemplateFields.IS_ACTIVE;
+import static com.notifymesh.templateservice.constants.TemplateFields.TEMPLATE_NAME;
+import static com.notifymesh.templateservice.constants.TemplateFields.VERSION;
 
 @Repository
 @RequiredArgsConstructor
 public class TemplateRepository {
+
+    private static final String ATTR_VAL_TEMPLATE_NAME = ":templateName";
+
+    private static final String ATTR_VAL_CHANNEL_TYPE = ":channelType";
+
+    private static final String KEY_COND_TEMPLATE_NAME = TEMPLATE_NAME + " = :templateName";
+
+    private static final String FILTER_CHANNEL_TYPE = CHANNEL_TYPE + " = :channelType";
 
     private final DynamoDbClient dynamoDbClient;
 
@@ -38,11 +46,11 @@ public class TemplateRepository {
     public Optional<Template> findByTemplateNameAndChannelType(String templateName, Channel channelType) {
         QueryRequest request = QueryRequest.builder()
                 .tableName(awsProperties.getDynamodb().getTableName())
-                .keyConditionExpression(TEMPLATE_NAME + " = :templateName")
-                .filterExpression(CHANNEL_TYPE + " = :channelType")
+                .keyConditionExpression(KEY_COND_TEMPLATE_NAME)
+                .filterExpression(FILTER_CHANNEL_TYPE)
                 .expressionAttributeValues(Map.of(
-                        ":templateName", AttributeValue.builder().s(templateName).build(),
-                        ":channelType", AttributeValue.builder().s(channelType.name()).build()
+                        ATTR_VAL_TEMPLATE_NAME, AttributeValue.builder().s(templateName).build(),
+                        ATTR_VAL_CHANNEL_TYPE, AttributeValue.builder().s(channelType.name()).build()
                 ))
                 .scanIndexForward(false)
                 .build();
@@ -97,11 +105,11 @@ public class TemplateRepository {
     public void softDelete(String templateName, Channel channelType) {
         QueryRequest queryRequest = QueryRequest.builder()
                 .tableName(awsProperties.getDynamodb().getTableName())
-                .keyConditionExpression(TEMPLATE_NAME + " = :templateName")
-                .filterExpression(CHANNEL_TYPE + " = :channelType")
+                .keyConditionExpression(KEY_COND_TEMPLATE_NAME)
+                .filterExpression(FILTER_CHANNEL_TYPE)
                 .expressionAttributeValues(Map.of(
-                        ":templateName", AttributeValue.builder().s(templateName).build(),
-                        ":channelType", AttributeValue.builder().s(channelType.name()).build()
+                        ATTR_VAL_TEMPLATE_NAME, AttributeValue.builder().s(templateName).build(),
+                        ATTR_VAL_CHANNEL_TYPE, AttributeValue.builder().s(channelType.name()).build()
                 ))
                 .scanIndexForward(false)
                 .build();
@@ -117,12 +125,15 @@ public class TemplateRepository {
         key.put(TEMPLATE_NAME, AttributeValue.builder().s(templateName).build());
         key.put(VERSION, AttributeValue.builder().n(String.valueOf(latest.getVersion())).build());
 
+        String attrValInactive = ":inactive";
+        String updateExpr = "SET " + IS_ACTIVE + " = " + attrValInactive;
+
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
                 .tableName(awsProperties.getDynamodb().getTableName())
                 .key(key)
-                .updateExpression("SET " + IS_ACTIVE + " = :inactive")
+                .updateExpression(updateExpr)
                 .expressionAttributeValues(Map.of(
-                        ":inactive", AttributeValue.builder().bool(false).build()
+                        attrValInactive, AttributeValue.builder().bool(false).build()
                 ))
                 .build();
 
