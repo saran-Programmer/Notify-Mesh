@@ -1,5 +1,6 @@
 package com.notifymesh.templateservice.dto;
 
+import com.notifymesh.templateservice.domain.valueobject.TemplateType;
 import com.notifymesh.templateservice.infrastructure.entity.TemplateAttachment;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UpdateTemplateRequest {
+
+    private TemplateType templateType;
 
     private String subject;
 

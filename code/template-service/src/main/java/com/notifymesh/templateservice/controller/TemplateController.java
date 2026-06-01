@@ -39,7 +39,10 @@ public class TemplateController {
 
     @PostMapping
     public ResponseEntity<TemplateResponse> createTemplate(@Valid @RequestBody CreateTemplateRequest request) {
-        templateValidator.validate(request.getTemplateName(), request.getChannelType(), request.getSubject());
+
+        templateValidator.validate(request.getTemplateName(), request.getChannelType(), 
+        request.getSubject(), request.getTemplateType());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(templateService.createTemplate(request));
     }
 
@@ -48,7 +51,10 @@ public class TemplateController {
             @PathVariable String templateName,
             @RequestParam Channel channelType,
             @Valid @RequestBody UpdateTemplateRequest request) {
-        templateValidator.validate(templateName, channelType, request.getSubject());
+
+        templateValidator.validate(templateName, channelType, request.getSubject(), 
+        request.getTemplateType());
+        
         return ResponseEntity.ok(templateService.updateTemplate(templateName, channelType, request));
     }
 

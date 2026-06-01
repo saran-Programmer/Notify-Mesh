@@ -10,6 +10,8 @@ public class TemplateFields {
 
     public static final String CHANNEL_TYPE = "channelType";
 
+    public static final String TEMPLATE_TYPE = "templateType";
+
     public static final String SUBJECT = "subject";
 
     public static final String BODY = "body";

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.notifymesh.notificationservice.domain.valueobject.DeliveryType;
+import com.notifymesh.notificationservice.domain.valueobject.TemplateType;
 import com.notifymesh.notificationservice.domain.valueobject.Mode;
 import com.notifymesh.notificationservice.domain.valueobject.NotificationStatus;
 import com.notifymesh.notificationservice.domain.valueobject.Channel;
@@ -14,11 +15,13 @@ import com.notifymesh.notificationservice.dto.AttachmentRequest;
 import com.notifymesh.notificationservice.dto.NotificationEvent;
 import com.notifymesh.notificationservice.dto.NotificationRequest;
 import com.notifymesh.notificationservice.dto.NotificationResponse;
+import com.notifymesh.notificationservice.dto.TemplateMetadata;
 import com.notifymesh.notificationservice.dto.UpdateNotificationRequest;
 import com.notifymesh.notificationservice.exception.ValidationException;
 import com.notifymesh.notificationservice.exception.DuplicateExternalIdException;
 import com.notifymesh.notificationservice.exception.NotFoundException;
 import com.notifymesh.notificationservice.infrastructure.client.EventBridgeSchedulerService;
+import com.notifymesh.notificationservice.infrastructure.client.TemplateServiceClient;
 import com.notifymesh.notificationservice.infrastructure.entity.Attachment;
 import com.notifymesh.notificationservice.infrastructure.entity.ChannelType;
 import com.notifymesh.notificationservice.infrastructure.entity.Notification;
@@ -34,10 +37,16 @@ import lombok.RequiredArgsConstructor;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+
     private final ReferenceDataService referenceDataService;
+
     private final AttachmentService attachmentService;
+
     private final NotificationKafkaProducer notificationKafkaProducer;
+
     private final EventBridgeSchedulerService eventBridgeSchedulerService;
+
+    private final TemplateServiceClient templateServiceClient;
 
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
@@ -50,6 +59,18 @@ public class NotificationService {
         ChannelType channelType = referenceDataService.getChannelByName(request.getChannel().name());
 
         PriorityTable priority = referenceDataService.getPriorityByName(request.getPriority().name());
+
+        TemplateMetadata templateMetadata = null;
+
+        if (request.getMode() == Mode.TEMPLATE) {
+            templateMetadata = templateServiceClient.templateExists(
+                    request.getTemplateName(), request.getChannel().name());
+
+            if (templateMetadata.getTemplateType() == TemplateType.HTML && request.getChannel() != Channel.EMAIL) {
+                throw new ValidationException(
+                        "HTML template type is not supported for channel '" + request.getChannel() + "'. Only TEXT is allowed.");
+            }
+        }
 
         if(request.getMaxRetries() == null) {
 
@@ -71,7 +92,9 @@ public class NotificationService {
 
         Notification saved = notificationRepository.save(notification);
 
-        NotificationEvent event = NotificationMapper.toNotificationEvent(saved);
+        boolean htmlContent = templateMetadata != null && templateMetadata.getTemplateType() == TemplateType.HTML;
+
+        NotificationEvent event = NotificationMapper.toNotificationEvent(saved, htmlContent);
 
         if (saved.getDeliveryType() == DeliveryType.DIRECT) {
             notificationKafkaProducer.publish(event);

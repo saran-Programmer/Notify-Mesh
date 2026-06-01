@@ -56,3 +56,11 @@ aws:
 
 discord:
   bot-token: ${DISCORD_TOKEN}
+
+template-service:
+  base-url: http://localhost:9093
+
+redis:
+  cache:
+    ttl:
+      template: 3600

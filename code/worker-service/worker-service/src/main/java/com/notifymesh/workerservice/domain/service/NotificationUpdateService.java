@@ -1,5 +1,6 @@
 package com.notifymesh.workerservice.domain.service;
 
+import com.notifymesh.workerservice.domain.valueobject.NotificationStatus;
 import com.notifymesh.workerservice.dto.FailureContext;
 import com.notifymesh.workerservice.infrastructure.repository.AuditLogRepository;
 import com.notifymesh.workerservice.infrastructure.repository.NotificationRepository;
@@ -29,19 +30,29 @@ public class NotificationUpdateService {
                     context.getRetryCount(),
                     context.getBaseDelaySeconds(),
                     context.getMultiplier());
-            notificationRepository.markAsRetry(context.getNotificationId(), context.getRetryCount() + 1, nextRetryAt, now);
+            notificationRepository.markAsRetry(context.getNotificationId(), context.getRetryCount() + 1, nextRetryAt, now, NotificationStatus.RETRY);
         } else {
-            notificationRepository.markAsFailed(context.getNotificationId(), now);
+            notificationRepository.markAsFailed(context.getNotificationId(), now, NotificationStatus.FAILED);
         }
 
         auditLogRepository.save(WorkerMapper.toFailureAuditLog(context, now));
     }
 
     @Transactional
+    public boolean markAsProcessing(Long notificationId) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        int updated = notificationRepository.markAsProcessing(notificationId, now, NotificationStatus.PROCESSING);
+
+        return updated == 1;
+    }
+
+    @Transactional
     public void updateSuccess(Long notificationId, Integer attemptNumber) {
         LocalDateTime now = LocalDateTime.now();
 
-        notificationRepository.markAsSent(notificationId, now);
+        notificationRepository.markAsSent(notificationId, now, NotificationStatus.SENT);
 
         auditLogRepository.save(WorkerMapper.toSuccessAuditLog(notificationId, attemptNumber, now));
     }

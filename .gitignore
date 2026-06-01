@@ -48,3 +48,4 @@ maven-wrapper.properties
 graphify-out/.graphify_root
 aws cred/notifymesh-dev_accessKeys.csv
 .env
+*.pem

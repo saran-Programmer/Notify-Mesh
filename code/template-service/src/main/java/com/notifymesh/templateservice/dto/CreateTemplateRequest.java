@@ -1,6 +1,7 @@
 package com.notifymesh.templateservice.dto;
 
 import com.notifymesh.templateservice.domain.valueobject.Channel;
+import com.notifymesh.templateservice.domain.valueobject.TemplateType;
 import com.notifymesh.templateservice.infrastructure.entity.TemplateAttachment;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,9 @@ public class CreateTemplateRequest {
 
     @NotNull
     private Channel channelType;
+
+    @NotNull
+    private TemplateType templateType;
 
     private String subject;
 

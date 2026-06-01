@@ -82,7 +82,7 @@ public class NotificationMapper {
                 .build();
     }
 
-    public static NotificationEvent toNotificationEvent(Notification notification) {
+    public static NotificationEvent toNotificationEvent(Notification notification, boolean htmlContent) {
         Map<String, String> stringParams = notification.getParameters() == null
                 ? null
                 : notification.getParameters().entrySet().stream()
@@ -108,6 +108,7 @@ public class NotificationMapper {
                 .attachments(attachmentKeys)
                 .mode(notification.getMode())
                 .baseDelaySeconds(notification.getPriority().getBaseDelaySeconds())
+                .htmlContent(htmlContent)
                 .build();
     }
 

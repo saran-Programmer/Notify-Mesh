@@ -1,4 +1,4 @@
-package com.notifymesh.notificationservice.config;
+package com.notifymesh.workerservice.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -7,8 +7,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class CacheProperties {
 
-    private long priority;
-    private long channel;
-    private long attachmentUrl;
-    private long templateExists;
+    private long template;
 }

@@ -38,7 +38,7 @@ public class EmailNotificationSender implements NotificationSender {
 
         helper.setTo(event.getRecipient());
         helper.setSubject(event.getSubject());
-        helper.setText(event.getContent(), false);
+        helper.setText(event.getContent(), event.isHtmlContent());
 
         for (FileAttachment attachment : attachments) {
 

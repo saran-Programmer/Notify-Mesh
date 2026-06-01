@@ -30,4 +30,6 @@ public class NotificationEvent {
     private List<String> attachments;
     private Mode mode;
     private Integer baseDelaySeconds;
+
+    private boolean htmlContent;
 }

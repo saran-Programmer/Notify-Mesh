@@ -45,6 +45,8 @@ public class Notification {
 
     private LocalDateTime sentAt;
 
+    private LocalDateTime processingStartedAt;
+
     @Column(nullable = false)
     private LocalDateTime lastModifiedDate;
 

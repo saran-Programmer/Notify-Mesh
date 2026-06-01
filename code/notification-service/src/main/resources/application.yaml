@@ -47,6 +47,7 @@ redis:
       priority: 86400
       channel: 86400
       attachment-url: 900
+      template-exists: 1000
 
 kafka:
   bootstrap-servers: localhost:9092
@@ -54,3 +55,6 @@ kafka:
     high: notification.priority.high
     medium: notification.priority.medium
     low: notification.priority.low
+
+template-service:
+  base-url: http://localhost:9093

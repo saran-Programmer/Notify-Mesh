@@ -1,9 +1,9 @@
-package com.notifymesh.notificationservice.config;
+package com.notifymesh.workerservice.config;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.notifymesh.notificationservice.constants.CacheNames;
+import com.notifymesh.workerservice.constants.CacheNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -26,14 +26,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CacheConfig {
 
-    private static final String KEY_PREFIX = "notification-service::";
+    private static final String KEY_PREFIX = "worker-service::";
 
     private final CacheProperties cacheProperties;
 
     private final ObjectMapper objectMapper;
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
+    RedisCacheManager cacheManager(RedisConnectionFactory factory) {
 
         String notifymeshBasePackage = "com.notifymesh";
         String javaTimePackage = "java.time";
@@ -57,10 +57,7 @@ public class CacheConfig {
                 .disableCachingNullValues();
 
         Map<String, RedisCacheConfiguration> configs = new HashMap<>();
-        configs.put(CacheNames.PRIORITY, base.entryTtl(resolveTtl(cacheProperties.getPriority())));
-        configs.put(CacheNames.CHANNEL, base.entryTtl(resolveTtl(cacheProperties.getChannel())));
-        configs.put(CacheNames.ATTACHMENT_URL, base.entryTtl(resolveTtl(cacheProperties.getAttachmentUrl())));
-        configs.put(CacheNames.TEMPLATE_EXISTS, base.entryTtl(resolveTtl(cacheProperties.getTemplateExists())));
+        configs.put(CacheNames.TEMPLATE, base.entryTtl(resolveTtl(cacheProperties.getTemplate())));
 
         return RedisCacheManager.builder(factory)
                 .withInitialCacheConfigurations(configs)
